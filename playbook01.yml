@@ -1,0 +1,32 @@
+---
+- name: playbook install webserver l1e1
+  hosts: node1.example.com
+  tasks:
+  - name: install httpd package
+    yum:
+      name: httpd
+      state: latest
+
+  - name: create index.html
+    copy:
+      src: index.html
+      dest: /var/www/html/index.html
+
+  - name: run web-server
+    service: 
+      name: httpd 
+      state: started
+      enabled: yes
+
+  - name: open ports for web-server
+    firewalld:
+      port: 80/tcp
+      permanent: true
+      state: enabled
+
+  - name: run firewall
+    service: 
+      name: firewalld
+      state: started
+      enabled: yes
+...

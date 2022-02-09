@@ -1,0 +1,43 @@
+---
+- name: playbook check grub l1e3
+  hosts: node1.example.com
+  tasks:
+  
+  - name: add net.ifnames if needed grub.cfg
+    ansible.builtin.lineinfile: 
+      path: /etc/default/grub
+      state: present
+      backrefs: yes
+      regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*net\.ifnames=\d))(.*\")'
+      line: '\g<1>net.ifnames=0 \g<2>'
+
+  - name: modify net.ifnames if needed grub.cfg
+    ansible.builtin.lineinfile: 
+      path: /etc/default/grub
+      state: present
+      backrefs: yes
+      regexp: '^(GRUB_CMDLINE_LINUX=\".*net\.ifnames=)([^0])(.*\"$)'
+      line: '\g<1>0\g<3>'
+  
+  - name: add biosdevname if needed grub.cfg
+    ansible.builtin.lineinfile: 
+      path: /etc/default/grub
+      state: present
+      backrefs: yes
+      regexp: '^(GRUB_CMDLINE_LINUX=\"(?!.*biosdevname=\d))(.*\")'
+      line: '\g<1>biosdevname=0 \g<2>'
+
+  - name: modify biosdevname if needed grub.cfg
+    ansible.builtin.lineinfile: 
+      path: /etc/default/grub
+      state: present
+      backrefs: yes
+      regexp: '^(GRUB_CMDLINE_LINUX=\".*biosdevname=)([^0])(.*\"$)'
+      line: '\g<1>0\g<3>'
+ 
+  - name: run grub2-makeconfig
+    command: grub2-mkconfig -o /boot/grub2/grub.cfg
+  
+  - name: reboot host
+    reboot:
+...

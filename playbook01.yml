@@ -2,9 +2,11 @@
 - name: playbook install webserver l1e1
   hosts: node1.example.com
   tasks:
-  - name: install httpd package
+  - name: install pakages
     yum:
-      name: httpd
+      name: 
+        - httpd
+        - firewalld
       state: latest
 
   - name: create index.html
